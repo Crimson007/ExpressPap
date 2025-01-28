@@ -9,8 +9,9 @@ const Verify = () => {
   const [transactionId, setTransactionId] = useState(null);
   const [transactionStatus, setTransactionStatus] = useState(null);
   const [errors, setErrors] = useState({});
-  // eslint-disable-next-line no-unused-vars
   const [pollCount, setPollCount] = useState(0); // Add counter for polling attempts
+
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; // Get API base URL from environment variables
 
   useEffect(() => {
     let pollInterval;
@@ -19,9 +20,9 @@ const Verify = () => {
       if (!transactionId) return;
 
       try {
-        const response = await fetch(`http://localhost:5000/transaction-status/${transactionId}`);
+        const response = await fetch(`${API_BASE_URL}/transaction-status/${transactionId}`);
         const data = await response.json();
-        
+
         console.log('Transaction status check:', data); // Debug log
 
         if (data.status === 'success') {
@@ -33,8 +34,7 @@ const Verify = () => {
           setMessage("❌ Payment failed or was cancelled. Please try again.");
           clearInterval(pollInterval);
         } else if (data.status === 'pending') {
-          setPollCount(prev => {
-            // Stop polling after 60 seconds (12 attempts at 5-second intervals)
+          setPollCount((prev) => {
             if (prev >= 12) {
               clearInterval(pollInterval);
               setTransactionStatus('timeout');
@@ -53,17 +53,11 @@ const Verify = () => {
     };
 
     if (transactionId && transactionStatus === 'pending') {
-      // Reset poll count when starting new transaction
       setPollCount(0);
-      
-      // Check immediately
       checkStatus();
-      
-      // Then start polling
       pollInterval = setInterval(checkStatus, 5000);
     }
 
-    // Cleanup function
     return () => {
       if (pollInterval) {
         clearInterval(pollInterval);
@@ -89,13 +83,13 @@ const Verify = () => {
     setTransactionId(null);
 
     try {
-      const response = await fetch('http://localhost:5000/verify', {
+      const response = await fetch(`${API_BASE_URL}/verify`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ licensePlate, phoneNumber }),
       });
       const data = await response.json();
-      
+
       if (response.ok && data.registered) {
         setVehicle(data.vehicle);
         setTransactionId(data.transactionId);
@@ -129,15 +123,16 @@ const Verify = () => {
     }
   };
 
-  const canStartNewTransaction = !loading && 
-    transactionStatus !== 'pending' && 
+  const canStartNewTransaction =
+    !loading &&
+    transactionStatus !== 'pending' &&
     (!transactionId || ['success', 'failed', 'timeout', 'error'].includes(transactionStatus));
 
   return (
     <div className="container mx-auto my-4 p-4 bg-dark-100 rounded-lg shadow-lg">
       <h2 className="text-2xl font-bold text-white mb-2">Verify Vehicle</h2>
       <p className="text-light-200 mb-6">Verify your registration status for a smooth experience at toll points.</p>
-      
+
       <div className="space-y-4">
         <div>
           <input
@@ -150,11 +145,9 @@ const Verify = () => {
             }`}
             disabled={!canStartNewTransaction}
           />
-          {errors.licensePlate && (
-            <div className="text-red-500 text-sm mt-1">{errors.licensePlate}</div>
-          )}
+          {errors.licensePlate && <div className="text-red-500 text-sm mt-1">{errors.licensePlate}</div>}
         </div>
-        
+
         <div>
           <input
             type="text"
@@ -166,13 +159,11 @@ const Verify = () => {
             }`}
             disabled={!canStartNewTransaction}
           />
-          {errors.phoneNumber && (
-            <div className="text-red-500 text-sm mt-1">{errors.phoneNumber}</div>
-          )}
+          {errors.phoneNumber && <div className="text-red-500 text-sm mt-1">{errors.phoneNumber}</div>}
         </div>
 
-        <button 
-          onClick={handleVerify} 
+        <button
+          onClick={handleVerify}
           disabled={!canStartNewTransaction}
           className="w-full bg-primary text-white px-4 py-2 rounded hover:bg-primary/90 transition-colors"
         >
@@ -180,23 +171,7 @@ const Verify = () => {
         </button>
       </div>
 
-      {message && (
-        <div className={`mt-4 p-3 rounded ${getStatusClass()}`}>
-          {message}
-          {transactionStatus === 'pending' && (
-            <div className="inline-block ml-2 animate-spin">
-              <svg className="w-4 h-4 text-white" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path
-                  className="opacity-75"
-                  fill="currentColor"
-                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                />
-              </svg>
-            </div>
-          )}
-        </div>
-      )}
+      {message && <div className={`mt-4 p-3 rounded ${getStatusClass()}`}>{message}</div>}
 
       {vehicle && (
         <div className="mt-4 p-4 bg-dark-100 rounded-lg border border-light-100/10">

@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 
+// Use the API base URL from environment variables
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 const Register = () => {
   const [formData, setFormData] = useState({
     licensePlate: '',
@@ -48,7 +51,7 @@ const Register = () => {
     const currentDate = new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
 
     try {
-      const response = await axios.post('http://localhost:5000/register', {
+      const response = await axios.post(`${API_BASE_URL}/register`, {
         ...formData,
         registrationDate: currentDate, // Add the current date to the payload
       });
