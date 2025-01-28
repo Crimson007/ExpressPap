@@ -9,12 +9,15 @@
     - [Prerequisites](#prerequisites)  
     - [Installation](#installation)  
     - [Running the Project](#running-the-project)  
-6. [🛡️ Backend Details](#️-backend-details)  
-7. [🧑‍💻 Usage Guide](#-usage-guide)  
-8. [⚠️ Common Issues & Troubleshooting](#️-common-issues--troubleshooting)  
-9. [🤝 Contribution Guide](#-contribution-guide)  
-10. [📜 License](#-license)  
-11. [🌟 Additional Notes](#-additional-notes)  
+6. [🌐 Deployment](#-deployment)  
+    - [Deploying on Vercel](#deploying-on-vercel)  
+    - [Deploying on Render](#deploying-on-render)  
+7. [🛡️ Backend Details](#️-backend-details)  
+8. [🧑‍💻 Usage Guide](#-usage-guide)  
+9. [⚠️ Common Issues & Troubleshooting](#️-common-issues--troubleshooting)  
+10. [🤝 Contribution Guide](#-contribution-guide)  
+11. [📜 License](#-license)  
+12. [🌟 Additional Notes](#-additional-notes)  
 
 ---
 
@@ -151,6 +154,49 @@ EXPRESSPAP/
    ```
 
 4. Open your browser and navigate to the provided frontend development server link.
+
+---
+## **🌐 Deployment**
+
+### **Deploying on Vercel**
+1. **Setup:**
+   - Ensure your frontend is in a separate folder (e.g., `express-pap`).
+   - Push your project to a GitHub repository.
+
+2. **Deploy:**
+   - Visit [Vercel](https://vercel.com/) and sign in with your GitHub account.
+   - Click **New Project** and import your repository.
+   - Select the frontend directory (e.g., `express-pap`) as the root of the project.
+   - Vercel automatically detects Vite as the framework and configures the deployment.
+
+3. **Environment Variables:**
+   - Add any environment variables (e.g., API base URLs) by navigating to the **Settings > Environment Variables** section in your Vercel dashboard.
+
+4. **Build and Deployment:**
+   - Click **Deploy** to start the build process. Once completed, your site will be live on a Vercel-provided domain (e.g., `https://express-pap.vercel.app`).
+
+### **Deploying on Render**
+1. **Setup:**
+   - Ensure both your frontend and backend are pushed to a GitHub repository.
+
+2. **Deploy Backend:**
+   - Go to [Render](https://render.com/) and log in.
+   - Click **New > Web Service** and link your GitHub repository.
+   - Select the backend directory (e.g., `backend`) and configure:
+     - **Environment:** Node.js
+     - **Build Command:** `npm install`
+     - **Start Command:** `node server.js`
+   - Add necessary environment variables (e.g., `MONGO_URI`, `MPESA_*`) under the **Environment** section.
+
+3. **Deploy Frontend:**
+   - Follow similar steps as above, but select the frontend directory (e.g., `express-pap`).
+   - Set the **Build Command** to `npm run build` and the **Publish Directory** to `dist`.
+
+4. **Connect Frontend to Backend:**
+   - Update the frontend `.env` file or API configuration to point to the deployed backend URL.
+
+5. **Finalize Deployment:**
+   - Once both services are deployed, you can access the frontend via the Render-provided domain.
 
 ---
 
